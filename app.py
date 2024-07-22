@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 
 # Title of the presentation
@@ -32,14 +31,11 @@ st.title("My Streamlit Presentation")
 
 # Sidebar for navigation
 st.sidebar.title("Navigation")
-option = st.sidebar.selectbox("Choose a section", ["Introduction", "Data", "Visualization", "Conclusion"])
+option = st.sidebar.selectbox("Choose a section", ["Introduction", "Data Representation", "Visualization Representation", "Conclusion"])
     """, language='python')
 
-# Sample data (defined outside the conditional blocks to make it available globally)
-data = pd.DataFrame({
-    'A': np.random.randn(4),
-    'B': np.random.randn(4)
-})
+# Load Iris dataset from a local CSV file
+iris_data = pd.read_csv("iris.csv")
 
 # Data section
 if option == "Data Representation":
@@ -49,22 +45,19 @@ if option == "Data Representation":
     # Explanation of the data section
     st.subheader("Code Explanation:")
     st.write("""
-        In this section, we generate some sample data using Pandas and NumPy.
-        The data is stored in a DataFrame and displayed in the Streamlit app.
+        In this section, we load the Iris dataset from a local CSV file and display it in the Streamlit app.
+        The data is stored in a DataFrame and displayed in the app.
     """)
     st.code("""
 import pandas as pd
-import numpy as np
 
-data = pd.DataFrame({
-    'A': np.random.randn(4),
-    'B': np.random.randn(4)
-})
-st.write(data)
+# Load Iris dataset from a local CSV file
+iris_data = pd.read_csv("iris.csv")
+st.write(iris_data)
     """, language='python')
 
     # Displaying the data
-    st.write(data)
+    st.write(iris_data)
 
     st.write("""
         This is how a code snippet can be displayed:
@@ -73,16 +66,12 @@ st.write(data)
     st.code("""
 st.code(\"\"\"
 import pandas as pd
-import numpy as np
 
-data = pd.DataFrame({
-    'A': np.random.randn(4),
-    'B': np.random.randn(4)
-})
-st.write(data)
+# Load Iris dataset from a local CSV file
+iris_data = pd.read_csv("iris.csv")
+st.write(iris_data)
 \"\"\", language='python')
     """, language='python')
-
 
 # Visualization section
 if option == "Visualization Representation":
@@ -92,28 +81,31 @@ if option == "Visualization Representation":
     # Explanation of the visualization section
     st.subheader("Code Explanation:")
     st.write("""
-        In this section, we create a simple line plot using Matplotlib.
-        The plot shows the data generated in the previous section.
+        In this section, we create a bar plot to visualize the average sepal length for each Species in the Iris dataset.
         We use Streamlit to display the plot in the app.
     """)
     st.code("""
 import matplotlib.pyplot as plt
 
+# Calculate the average sepal length for each Species
+avg_SepalLengthCm = iris_data.groupby('Species')['SepalLengthCm'].mean()
+
+# Create a bar plot
 fig, ax = plt.subplots()
-ax.plot(data['A'], label='A')
-ax.plot(data['B'], label='B')
-ax.set_title('Sample Line Plot')
-ax.legend()
+avg_SepalLengthCm.plot(kind='bar', ax=ax)
+ax.set_title('Average Sepal Length by Species')
+ax.set_xlabel('Species')
+ax.set_ylabel('Average Sepal Length')
 st.pyplot(fig)
     """, language='python')
 
     # Sample visualization
+    avg_SepalLengthCm = iris_data.groupby('Species')['SepalLengthCm'].mean()
     fig, ax = plt.subplots()
-    ax.plot(data['A'], label='A')
-    ax.plot(data['B'], label='B')
-    ax.set_title('Sample Line Plot')
-    ax.legend()
-
+    avg_SepalLengthCm.plot(kind='bar', ax=ax)
+    ax.set_title('Average Sepal Length by Species')
+    ax.set_xlabel('Species')
+    ax.set_ylabel('Average Sepal Length')
     st.pyplot(fig)
 
 # Conclusion section
